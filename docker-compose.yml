@@ -1,0 +1,39 @@
+services:
+  gateway:
+    build: ./gateway
+    container_name: nr-py-gateway
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: "py-gateway"
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
+      NEW_RELIC_LOG: "stdout"
+      NEW_RELIC_LOG_LEVEL: "info"
+    ports:
+      - "5003:5000"
+    depends_on:
+      - cart
+      - payment
+
+  cart:
+    build: ./cart
+    container_name: nr-py-cart
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: "py-cart"
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
+      NEW_RELIC_LOG: "stdout"
+      NEW_RELIC_LOG_LEVEL: "info"
+    ports:
+      - "5001:5001"
+
+  payment:
+    build: ./payment
+    container_name: nr-py-payment
+    environment:
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: "py-payment"
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
+      NEW_RELIC_LOG: "stdout"
+      NEW_RELIC_LOG_LEVEL: "info"
+    ports:
+      - "5002:5002"
