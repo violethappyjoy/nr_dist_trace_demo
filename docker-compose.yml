@@ -1,39 +1,49 @@
+version: "3.9"
+
 services:
+  xray-daemon:
+    image: amazon/aws-xray-daemon:3.3.0
+    container_name: xray-daemon
+    environment:
+      AWS_REGION: ${AWS_REGION}
+      # For local dev, the daemon can also read credentials from
+      # environment vars or shared credentials file.
+    ports:
+      - "2000:2000/udp"   # UDP port for SDK to send traces
+    command: ["-o"]       # local mode, do not use EC2 metadata
+    # Daemon needs network access to AWS X-Ray APIs
+
   gateway:
     build: ./gateway
-    container_name: nr-py-gateway
+    container_name: cw-py-gateway
     environment:
-      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
-      NEW_RELIC_APP_NAME: "py-gateway"
-      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
-      NEW_RELIC_LOG: "stdout"
-      NEW_RELIC_LOG_LEVEL: "info"
+      AWS_REGION: ${AWS_REGION}
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
     ports:
-      - "5003:5000"
+      - "5003:5003"
     depends_on:
       - cart
       - payment
+      - xray-daemon
 
   cart:
     build: ./cart
-    container_name: nr-py-cart
+    container_name: cw-py-cart
     environment:
-      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
-      NEW_RELIC_APP_NAME: "py-cart"
-      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
-      NEW_RELIC_LOG: "stdout"
-      NEW_RELIC_LOG_LEVEL: "info"
+      AWS_REGION: ${AWS_REGION}
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
     ports:
       - "5001:5001"
+    depends_on:
+      - xray-daemon
 
   payment:
     build: ./payment
-    container_name: nr-py-payment
+    container_name: cw-py-payment
     environment:
-      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
-      NEW_RELIC_APP_NAME: "py-payment"
-      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: "true"
-      NEW_RELIC_LOG: "stdout"
-      NEW_RELIC_LOG_LEVEL: "info"
+      AWS_REGION: ${AWS_REGION}
+      AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
     ports:
       - "5002:5002"
+    depends_on:
+      - xray-daemon

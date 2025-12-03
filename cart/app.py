@@ -1,17 +1,22 @@
-# cart/app.py
 import time
 
-import newrelic.agent
-newrelic.agent.initialize()
+# import newrelic.agent
+# newrelic.agent.initialize()
 
 from flask import Flask, jsonify
 
+from aws_xray_sdk.core import xray_recorder, patch_all
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+
+xray_recorder.configure(service="py-cart")
+patch_all()
+
 app = Flask(__name__)
+XRayMiddleware(app, xray_recorder)
 
 
 @app.route("/cart")
 def get_cart():
-    # Pretend we hit a database
     time.sleep(0.15)
     items = [
         {"sku": "book-123", "qty": 1, "price": 10.0},

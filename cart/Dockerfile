@@ -14,10 +14,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Common New Relic defaults; app name and license come from env at runtime
-ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true \
-    NEW_RELIC_LOG=stdout \
-    NEW_RELIC_LOG_LEVEL=info \
-    NEW_RELIC_AGENT_ENABLED=true
+# ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true \
+#     NEW_RELIC_LOG=stdout \
+#     NEW_RELIC_LOG_LEVEL=info \
+#     NEW_RELIC_AGENT_ENABLED=true
 
 EXPOSE 5000
 
