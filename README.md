@@ -2,7 +2,8 @@
 * Create .env with new relic token.
 * Run: `docker compose build`
 * Run: `docker compose run -d`
-* Check through: ``` 
+* Check through: 
+``` 
 curl -s http://localhost:5001/cart | jq  
 AND
 curl -s http://localhost:5001/cart | jq 
