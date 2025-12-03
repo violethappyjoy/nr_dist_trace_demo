@@ -1,4 +1,3 @@
-# gateway/Dockerfile (same for cart, payment)
 FROM python:3.11-slim
 
 WORKDIR /app

@@ -2,15 +2,26 @@ version: "3.9"
 
 services:
   xray-daemon:
-    image: amazon/aws-xray-daemon:3.3.0
+    image: amazon/aws-xray-daemon:3.6.1
     container_name: xray-daemon
     environment:
       AWS_REGION: ${AWS_REGION}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       # For local dev, the daemon can also read credentials from
       # environment vars or shared credentials file.
     ports:
-      - "2000:2000/udp"   # UDP port for SDK to send traces
-    command: ["-o"]       # local mode, do not use EC2 metadata
+      - "2000:2000/udp"
+      - "2000:2000/tcp"   # port for SDK to send traces
+    command:
+      - "-o"
+      - "-n"
+      - "${AWS_REGION}"
+      - "-b"
+      - "0.0.0.0:2000"
+      - "-t"
+      - "0.0.0.0:2000"       
+    # local mode, do not use EC2 metadata
     # Daemon needs network access to AWS X-Ray APIs
 
   gateway:

@@ -19,7 +19,7 @@ COPY . .
 #     NEW_RELIC_LOG_LEVEL=info \
 #     NEW_RELIC_AGENT_ENABLED=true
 
-EXPOSE 5000
+EXPOSE 5003
 
 # Use gunicorn for a more realistic production-style server
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5003", "app:app"]
